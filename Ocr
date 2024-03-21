@@ -1,0 +1,51 @@
+import os
+import pandas as pd
+import pytesseract
+from pdf2image import convert_from_path
+
+# Function to extract text from PDF using OCR
+def extract_text_from_pdf(pdf_file):
+    images = convert_from_path(pdf_file)
+    text = ''
+    for img in images:
+        text += pytesseract.image_to_string(img)
+    return text
+
+# Function to search for text in extracted text
+def search_text_in_text(extracted_text, texts):
+    text_counts = {text: 0 for text in texts}
+    for text_to_find in texts:
+        count = extracted_text.lower().count(text_to_find.lower())
+        if count > 0:
+            text_counts[text_to_find] += count
+    return text_counts
+
+# Function to search texts in all PDFs in a folder
+def search_texts_in_folder(folder_path, texts):
+    results = []
+    for filename in os.listdir(folder_path):
+        if filename.endswith('.pdf'):
+            file_path = os.path.join(folder_path, filename)
+            extracted_text = extract_text_from_pdf(file_path)
+            text_counts = search_text_in_text(extracted_text, texts)
+            result = {'Filename': filename}
+            for text, count in text_counts.items():
+                result[text] = f'True({count})' if count > 0 else 'False'
+            results.append(result)
+    return results
+
+# Define the folder path
+folder_path = '/path/to/your/folder'
+
+# Define the texts to search for
+texts_to_search = ['2023', 'kuaanvi', 'itsec', 'cameo']
+
+# Search for texts in all PDFs in the folder
+search_results = search_texts_in_folder(folder_path, texts_to_search)
+
+# Convert results to DataFrame
+df = pd.DataFrame(search_results)
+
+# Save DataFrame to Excel
+excel_file_path = '/path/to/your/excel_file.xlsx'
+df.to_excel(excel_file_path, index=False)
