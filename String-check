@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>String Comparison</title>
+    <script>
+        function compareStrings() {
+            // Get the values from the textareas
+            var string1 = document.getElementById('string1').value;
+            var string2 = document.getElementById('string2').value;
+
+            // Split the strings into arrays of lines
+            var string1Lines = string1.split('\n');
+            var string2Lines = string2.split('\n');
+
+            // Compare the arrays
+            if (string1Lines.length !== string2Lines.length) {
+                alert("Strings do not match!");
+            } else {
+                var match = true;
+                for (var i = 0; i < string1Lines.length; i++) {
+                    if (string1Lines[i] !== string2Lines[i]) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    alert("Strings match!");
+                } else {
+                    alert("Strings do not match!");
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+<textarea id="string1" rows="4" cols="50"></textarea><br>
+<textarea id="string2" rows="4" cols="50"></textarea><br>
+<button onclick="compareStrings()">Compare</button>
+
+</body>
+</html>
